@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+##!/usr/bin/python3
 
 '''
 Sample Pegasus workflow for Automating a Variant Calling Workflow
@@ -59,7 +60,7 @@ def generate_wf():
     
     container = Container(
                    'variant-calling',
-                   Container.Docker,
+                   Container.DOCKER,
                    'docker://pegasus/variant-calling:latest'
                 )
     tc.add_containers(container)
@@ -116,7 +117,7 @@ def generate_wf():
         is_stageable=False
     )
     vcfutils.add_profiles(Namespace.CONDOR, key='request_memory', value='1 GB')
-    tc.add_transformations(vcftools)
+    tc.add_transformations(vcfutils)
 
 
     # --- Workflow -----------------------------------------------------
@@ -144,8 +145,8 @@ def generate_wf():
         # files for this id
         fastq_1 = File('{}_1.trim.sub.fastq'.format(sra_id))
         fastq_2 = File('{}_2.trim.sub.fastq'.format(sra_id))
-        rc.add_replica('local', fastq_1, os.path.abspath(args.fastq,fastq_1))
-        rc.add_replica('local', fastq_2, os.path.abspath(args.fastq,fastq_1))
+        rc.add_replica('local', fastq_1, os.path.join(os.path.abspath(args.fastq_dir), fastq_1.lfn))
+        rc.add_replica('local', fastq_2, os.path.join(os.path.abspath(args.fastq_dir), fastq_2.lfn))
 
         sam=File('sam/{}.aligned.sam'.format(sra_id))
         bam=File('bam/{}.aligned.bam'.format(sra_id))
@@ -198,7 +199,7 @@ def generate_wf():
         j = Job('vcfutils')
         j.add_args('varFilter', variants, '>', final_variants)
         j.add_inputs(variants)
-        j.add_outputs(final_variantsvariants, stage_out=False)
+        j.add_outputs(final_variants, stage_out=False)
         wf.add_jobs(j)
 
     try:
