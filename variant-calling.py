@@ -152,9 +152,9 @@ def generate_wf():
         bam=File('bam/{}.aligned.bam'.format(sra_id))
         sorted_bam=File('bam/{}.aligned.sorted.bam'.format(sra_id))
 
-        raw_bcf=File('bcf/{}._raw.bcf'.format(sra_id))
-        variants=File('bcf/{}._variants.bcf'.format(sra_id))
-        final_variants=File('vcf/{}._final_variants.bcf'.format(sra_id))
+        raw_bcf=File('bcf/{}_raw.bcf'.format(sra_id))
+        variants=File('bcf/{}_variants.bcf'.format(sra_id))
+        final_variants=File('vcf/{}_final_variants.bcf'.format(sra_id))
 
         """
         bwa mem $genome $fq1 $fq2 > $sam
@@ -199,13 +199,13 @@ def generate_wf():
         j = Job('vcfutils')
         j.add_args('varFilter', variants, '>', final_variants)
         j.add_inputs(variants)
-        j.add_outputs(final_variants, stage_out=False)
+        j.add_outputs(final_variants, stage_out=True)
         wf.add_jobs(j)
 
     try:
         wf.add_transformation_catalog(tc)
         wf.add_replica_catalog(rc)
-        wf.plan(submit=True)
+        wf.plan(verbose=3, submit=True)
     except PegasusClientError as e:
         print(e.output)
 
