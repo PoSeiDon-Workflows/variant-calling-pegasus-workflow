@@ -4,9 +4,9 @@ set -e
 
 SRA_ID=$1
 
-sam="sam/${SRA_ID}.aligned.sam"
-bam="sam/${SRA_ID}.aligned.bam"
-sorted_bam="sam/${SRA_ID}.aligned.sorted.bam"
+sam="${SRA_ID}.aligned.sam"
+bam="${SRA_ID}.aligned.bam"
+sorted_bam="${SRA_ID}.aligned.sorted.bam"
 
 echo "Converting $sam to bam format $bam"
 samtools view -S -b $sam > $bam
