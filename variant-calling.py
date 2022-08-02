@@ -197,9 +197,9 @@ def generate_wf():
 
         # vcfutils Filter and report the SNV variants in variant calling format (VCF)
         j = Job('vcfutils')
-        j.add_args('varFilter', variants, '>', final_variants)
+        j.add_args('varFilter', variants)
         j.add_inputs(variants)
-        j.add_outputs(final_variants, stage_out=True)
+        j.set_stdout(final_variants, stage_out=True)
         wf.add_jobs(j)
 
     try:
