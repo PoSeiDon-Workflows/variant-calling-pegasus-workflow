@@ -148,13 +148,13 @@ def generate_wf():
         rc.add_replica('local', fastq_1, os.path.join(os.path.abspath(args.fastq_dir), fastq_1.lfn))
         rc.add_replica('local', fastq_2, os.path.join(os.path.abspath(args.fastq_dir), fastq_2.lfn))
 
-        sam=File('sam/{}.aligned.sam'.format(sra_id))
-        bam=File('bam/{}.aligned.bam'.format(sra_id))
-        sorted_bam=File('bam/{}.aligned.sorted.bam'.format(sra_id))
+        sam=File('{}.aligned.sam'.format(sra_id))
+        bam=File('{}.aligned.bam'.format(sra_id))
+        sorted_bam=File('{}.aligned.sorted.bam'.format(sra_id))
 
-        raw_bcf=File('bcf/{}_raw.bcf'.format(sra_id))
-        variants=File('bcf/{}_variants.bcf'.format(sra_id))
-        final_variants=File('vcf/{}_final_variants.bcf'.format(sra_id))
+        raw_bcf=File('{}_raw.bcf'.format(sra_id))
+        variants=File('{}_variants.bcf'.format(sra_id))
+        final_variants=File('{}_final_variants.bcf'.format(sra_id))
 
         """
         bwa mem $genome $fq1 $fq2 > $sam
