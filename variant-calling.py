@@ -190,7 +190,7 @@ def generate_wf():
 
         # bcftools for Detect the single nucleotide variants (SNVs)
         j = Job('bcftools')
-        j.add_args('--ploidy 1 -m -v -o', variants, raw_bcf)
+        j.add_args('call --ploidy 1 -m -v -o', variants, raw_bcf)
         j.add_inputs(raw_bcf)
         j.add_outputs(variants, stage_out=False)
         wf.add_jobs(j)
