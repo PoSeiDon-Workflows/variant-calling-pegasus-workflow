@@ -170,7 +170,7 @@ def generate_wf():
         j = Job('bwa')
         j.add_args('mem', ref_genome, fastq_1, fastq_2)
         j.add_inputs(*index_files, ref_genome, fastq_1, fastq_2)
-        j.add_outputs(sam, stage_out=False)
+        j.set_stdout(sam, stage_out=False)
         wf.add_jobs(j)
 
         # samtools_wrapper for doing alignment to genome
