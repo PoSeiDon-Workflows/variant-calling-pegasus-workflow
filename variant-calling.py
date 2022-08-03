@@ -35,8 +35,8 @@ def generate_wf():
     parser.add_argument('--reference-genome', dest='reference_genome', default=None, required=True,
                         help='Specifies the reference genome file')
     # temp argument
-    parser.add_argument('--fastq-dir', dest='fastq_dir', default=None, required=True,
-                        help='Directory where input fastq files are')
+    #parser.add_argument('--fastq-dir', dest='fastq_dir', default=None, required=True,
+    #                    help='Directory where input fastq files are')
     args = parser.parse_args(sys.argv[1:])
     
     wf = Workflow('variant-calling')
