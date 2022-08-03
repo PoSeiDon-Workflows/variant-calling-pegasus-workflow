@@ -65,6 +65,18 @@ def generate_wf():
                 )
     tc.add_containers(container)
 
+    fasterq_dump = Transformation(
+        'fasterq-dump',
+        site='local',
+        container=container,
+        pfn=BASE_DIR + '/tools/fasterq_dump_wrapper',
+        is_stageable=True
+    )
+    fasterq_dump.add_profiles(Namespace.CONDOR, key='request_memory', value='1 GB')
+    # this one is used to limit the number of concurrent downloads
+    fasterq_dump.add_profiles(Namespace.DAGMAN, key='category', value='fasterq-dump')
+    tc.add_transformations(fasterq_dump)
+
     bwa = Transformation(
                        'bwa',
                        site='incontainer',
@@ -142,11 +154,15 @@ def generate_wf():
         if len(sra_id) < 5:
             continue
 
+
+        """
         # files for this id
+        # commented out as we download files from NCBI as part of fasterq-dump job
         fastq_1 = File('{}_1.trim.sub.fastq'.format(sra_id))
         fastq_2 = File('{}_2.trim.sub.fastq'.format(sra_id))
         rc.add_replica('local', fastq_1, os.path.join(os.path.abspath(args.fastq_dir), fastq_1.lfn))
         rc.add_replica('local', fastq_2, os.path.join(os.path.abspath(args.fastq_dir), fastq_2.lfn))
+        """
 
         sam=File('{}.aligned.sam'.format(sra_id))
         bam=File('{}.aligned.bam'.format(sra_id))
@@ -158,13 +174,23 @@ def generate_wf():
 
         """
         bwa mem $genome $fq1 $fq2 > $sam
-    samtools view -S -b $sam > $bam
-    samtools sort -o $sorted_bam $bam 
-    samtools index $sorted_bam
-    bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam
-    bcftools call --ploidy 1 -m -v -o $variants $raw_bcf 
-    vcfutils.pl varFilter $variants > $final_variants
-    """
+        samtools view -S -b $sam > $bam
+        samtools sort -o $sorted_bam $bam 
+        samtools index $sorted_bam
+        bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam
+        bcftools call --ploidy 1 -m -v -o $variants $raw_bcf 
+        vcfutils.pl varFilter $variants > $final_variants
+        """
+
+        # files for this id
+        fastq_1 = File('{}_1.fastq'.format(sra_id))
+        fastq_2 = File('{}_2.fastq'.format(sra_id))
+
+        # download job
+        j = Job('fasterq-dump')
+        j.add_args('--split-files', sra_id)
+        j.add_outputs(fastq_1, fastq_2, stage_out=False)
+        wf.add_jobs(j)
 
         # align reads job
         j = Job('bwa')
