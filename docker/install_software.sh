@@ -24,7 +24,15 @@ PACKAGE="sratoolkit"
     mv ${PACKAGE}.${SRATOOLKIT_VERSION}-centos_linux64/* `pwd`/../../install/${PACKAGE}/${SRATOOLKIT_VERSION}/
     (cd `pwd`/../../install/${PACKAGE}/ && ln -s ${SRATOOLKIT_VERSION} default)
 )
+PACKAGE_PATH=`(cd ${BASE_DIR}/software/install/${PACKAGE}/default/ && pwd)`
+echo "${PACKAGE} installed at ${PACKAGE_PATH}"
+ADDON_PATH=${PACKAGE_PATH}/bin
 
+# fix for vdb-config interactive issue
+# https://github.com/ncbi/sra-tools/issues/291
+if ! grep "/LIBS/GUID" ~/.ncbi/user-settings.mkfg &> /dev/null;
+   then mkdir -p ~/.ncbi && printf '/LIBS/GUID = "%s"\n' `uuidgen` > ~/.ncbi/user-settings.mkfg;
+fi
 
 # install bwa
 PACKAGE="bwa"
