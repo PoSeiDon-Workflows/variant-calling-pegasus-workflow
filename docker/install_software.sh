@@ -7,9 +7,24 @@ BWA_VERSION="0.7.17"
 SAMTOOLS_VERSION="1.15.1"
 BCFTOOLS_VERSION="1.15.1"
 HTSLIB_VERSION="1.15.1"
+SRATOOLKIT_VERSION="3.0.0"
 ADDON_PATH=""
 
 mkdir -p ${BASE_DIR}/software/src ${BASE_DIR}/software/install
+
+# install the sratoolkit
+PACKAGE="sratoolkit"
+(
+    cd ${BASE_DIR}/software/src
+    mkdir -p ${PACKAGE}
+    curl -L -o ${PACKAGE}/${PACKAGE}-${SRATOOLKIT_VERSION}.tar.gz https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/${SRATOOLKIT_VERSION}/${PACKAGE}.${SRATOOLKIT_VERSION}-centos_linux64.tar.gz
+    cd ${PACKAGE}
+    tar zxvf ${PACKAGE}-${SRATOOLKIT_VERSION}.tar.gz
+    mkdir -p `pwd`/../../install/${PACKAGE}/${SRATOOLKIT_VERSION}
+    mv ${PACKAGE}.${SRATOOLKIT_VERSION}-centos_linux64/* `pwd`/../../install/${PACKAGE}/${SRATOOLKIT_VERSION}/
+    (cd `pwd`/../../install/${PACKAGE}/ && ln -s ${SRATOOLKIT_VERSION} default)
+)
+
 
 # install bwa
 PACKAGE="bwa"

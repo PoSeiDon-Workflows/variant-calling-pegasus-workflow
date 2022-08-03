@@ -34,4 +34,4 @@ ADD install_software.sh /opt
 
 RUN /opt/install_software.sh
 
-ENV PATH="/opt/software/install/bwa/default/:/opt/software/install/bcftools/default/bin:/opt/software/install/samtools/default/bin:/opt/software/install/htslib/default/bin":${PATH}
+ENV PATH="/opt/software/install/sratoolkit/default/bin/:/opt/software/install/bwa/default/:/opt/software/install/bcftools/default/bin:/opt/software/install/samtools/default/bin:/opt/software/install/htslib/default/bin":${PATH}
