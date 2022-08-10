@@ -61,7 +61,7 @@ def generate_wf():
     
     container = Container(
                    'variant-calling',
-                   Container.DOCKER,
+                   Container.SINGULARITY,
                    'docker://pegasus/variant-calling:latest'
                 )
     tc.add_containers(container)
