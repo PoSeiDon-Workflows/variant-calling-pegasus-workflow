@@ -88,18 +88,6 @@ def generate_wf():
     bwa.add_profiles(Namespace.CONDOR, key='request_memory', value='1 GB')
     tc.add_transformations(bwa)
 
-    """
-    samtools = Transformation(
-        'samtools',
-        site='incontainer',
-        container=container,
-        pfn='/opt/software/install/samtools/default/bin/samtools',
-        is_stageable=False
-    )
-    samtools.add_profiles(Namespace.CONDOR, key='request_memory', value='1 GB')
-    tc.add_transformations(samtools)
-    """
-
     # we use the simple bash wrapper to convert to bam,
     # sort and index the generated bam file
     samtools = Transformation(
