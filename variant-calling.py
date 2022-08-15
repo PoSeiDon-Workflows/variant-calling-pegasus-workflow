@@ -121,16 +121,15 @@ def generate_wf():
 
     # --- Site Catalog -------------------------------------------------
     sc = SiteCatalog()
-    condorpool = Site("condorpool", arch=Arch.X86_64, os_type=OS.LINUX)
+    osn = Site("osn", arch=Arch.X86_64, os_type=OS.LINUX)
 
     # create and add a bucket in OSN to use for your workflows
-    condorpool_shared_scratch_dir = Directory(Directory.SHARED_SCRATCH, path="/asc190064-bucket01/pegasus-workflows/variant") \
+    osn_shared_scratch_dir = Directory(Directory.SHARED_SCRATCH, path="/asc190064-bucket01/pegasus-workflows/variant") \
         .add_file_servers(
         FileServer("s3://vahi@osn/asc190064-bucket01/pegasus-workflows/variant", Operation.ALL),
     )
-    condorpool.add_directories(condorpool_shared_scratch_dir)
-    condorpool.add_pegasus_profiles(style="condor")
-    sc.add_sites(condorpool)
+    osn.add_directories(osn_shared_scratch_dir)
+    sc.add_sites(osn)
 
     # add a local site with an optional job env file to use for compute jobs
     shared_scratch_dir = "{}/work".format(BASE_DIR)
@@ -249,7 +248,7 @@ def generate_wf():
         wf.add_transformation_catalog(tc)
         wf.add_site_catalog(sc)
         wf.add_replica_catalog(rc)
-        wf.plan(staging_sites={"condorpool": "condorpool"}, verbose=3, submit=True)
+        wf.plan(staging_sites={"condorpool": "osn"}, sites=["condorpool"], verbose=3, submit=True)
     except PegasusClientError as e:
         print(e.output)
 
