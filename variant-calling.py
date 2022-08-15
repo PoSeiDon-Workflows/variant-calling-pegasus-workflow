@@ -158,7 +158,7 @@ def generate_wf():
         index_files.append(File(ref_genome.lfn + "." + suffix))
 
     # index the reference file
-    index_job = Job('bwa')
+    index_job = Job('bwa', node_label="ref_genome_index")
     index_job.add_args('index', ref_genome.lfn)
     index_job.add_inputs(ref_genome)
     index_job.add_outputs(*index_files, stage_out=False)
@@ -204,20 +204,20 @@ def generate_wf():
         fastq_2 = File('{}_2.fastq'.format(sra_id))
 
         # download job
-        j = Job('fasterq-dump')
+        j = Job('fasterq-dump', node_label="fasterq-dump")
         j.add_args('--split-files', sra_id)
         j.add_outputs(fastq_1, fastq_2, stage_out=False)
         wf.add_jobs(j)
 
-        # align reads job
-        j = Job('bwa')
+        # align reads tp reference genome job
+        j = Job('bwa', node_label="align_reads")
         j.add_args('mem', ref_genome, fastq_1, fastq_2)
         j.add_inputs(*index_files, ref_genome, fastq_1, fastq_2)
         j.set_stdout(sam, stage_out=False)
         wf.add_jobs(j)
 
         # samtools_wrapper for doing alignment to genome
-        j = Job('samtools')
+        j = Job('samtools', node_label="sam_2_bam_converter")
         j.add_args(sra_id)
         j.add_inputs(sam)
         j.add_outputs(bam, sorted_bam, stage_out=False)
@@ -225,21 +225,21 @@ def generate_wf():
 
         # Variant calling
         # bcftools for calculating the read coverage of positions in the genome
-        j = Job('bcftools')
+        j = Job('bcftools', node_label="calculate_read_coverage")
         j.add_args('mpileup -O b -o', raw_bcf, '-f', ref_genome, sorted_bam)
         j.add_inputs(ref_genome, sorted_bam)
         j.add_outputs(raw_bcf, stage_out=False)
         wf.add_jobs(j)
 
         # bcftools for Detect the single nucleotide variants (SNVs)
-        j = Job('bcftools')
+        j = Job('bcftools', node_label="detect_snv")
         j.add_args('call --ploidy 1 -m -v -o', variants, raw_bcf)
         j.add_inputs(raw_bcf)
         j.add_outputs(variants, stage_out=False)
         wf.add_jobs(j)
 
         # vcfutils Filter and report the SNV variants in variant calling format (VCF)
-        j = Job('vcfutils')
+        j = Job('vcfutils', node_label="vcfutils")
         j.add_args('varFilter', variants)
         j.add_inputs(variants)
         j.set_stdout(final_variants, stage_out=True)
