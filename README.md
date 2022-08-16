@@ -30,6 +30,34 @@ The number of concurrent downloads is limited with a DAGMan
 category profile.
 
 ## Workflow
+
+The Pegasus workflow downloads SRA data from NCBI repository using
+`fasterq-dump` in the SRA toolkit and aligns it against the reference 
+genome.
+
+![Pegasus Variant Calling Workflow for 2 SRA reads ](/images/workflow.png)
+
+The tools used for various jobs in the worklfow are listed in table below
+
+| Job Label                 | Tool Used        |
+| --------------------------|----------------- |
+| fasterq_dump              | fasterq_dump     |
+| align_reads               | bwa              |
+| sam_2_bam_converter       | samtools         |
+| calculate_read_coverage   | bcftools         |
+| detect_snv                | bcftools         |
+| variant_calling           | vcfutils         |
+
+### Running the Workflow
+
+The workflow is set to run on a local HTCondor Pool in the nonsharedfs
+data configuration mode, where Open Storage Network(OSN) is used as
+a staging site. You need to specify your OSN credentials in the Pegasus
+Credentials file (~/.pegasus/credentials.conf). 
+
+Details on how to do it can be found in the 
+[user guide](https://pegasus.isi.edu/docs/5.0.3dev/reference-guide/data-management.html#open-storage-network-osn-osn)
+
 To submit a workflow, run:
 ```
     ./variant-calling.py --reference-genome ref_genome/ecoli_rel606.fasta  --sequence-reads-list tests/2/sra_ids.txt 
