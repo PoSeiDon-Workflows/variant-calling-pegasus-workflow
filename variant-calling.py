@@ -203,7 +203,7 @@ def generate_wf():
         fastq_2 = File('{}_2.fastq'.format(sra_id))
 
         # download job
-        j = Job('fasterq-dump', node_label="fasterq-dump")
+        j = Job('fasterq-dump', node_label="fasterq_dump")
         j.add_args('--split-files', sra_id)
         j.add_outputs(fastq_1, fastq_2, stage_out=False)
         wf.add_jobs(j)
@@ -238,7 +238,7 @@ def generate_wf():
         wf.add_jobs(j)
 
         # vcfutils Filter and report the SNV variants in variant calling format (VCF)
-        j = Job('vcfutils', node_label="vcfutils")
+        j = Job('vcfutils', node_label="variant_calling")
         j.add_args('varFilter', variants)
         j.add_inputs(variants)
         j.set_stdout(final_variants, stage_out=True)
