@@ -208,9 +208,13 @@ def generate_wf():
         j.add_outputs(fastq_1, fastq_2, stage_out=False)
         wf.add_jobs(j)
 
-        # align reads tp reference genome job
+        # align reads to reference genome job
         j = Job('bwa', node_label="align_reads")
-        j.add_args('mem', ref_genome, fastq_1, fastq_2)
+        # Note that the cores we give Pegasus and the -t does not match.
+        # Oversubscriptions is ok, as bwa can not keep all the cores busy 100%
+        # of the time.
+        j.add_pegasus_profile(cores=3)
+        j.add_args('mem', "-t 6", ref_genome, fastq_1, fastq_2)
         j.add_inputs(*index_files, ref_genome, fastq_1, fastq_2)
         j.set_stdout(sam, stage_out=False)
         wf.add_jobs(j)
