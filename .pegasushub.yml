@@ -3,3 +3,6 @@ pegasus:
     min: 5.0.2
 scripts:
   generator: variant-calling.py
+dependencies:
+  - "Python 3.5"
+  - "Singularity"
