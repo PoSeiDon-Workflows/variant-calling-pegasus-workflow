@@ -1,14 +1,14 @@
 # Variant Calling Pegasus Workflow
 
-A Pegasus Workflow for 
-[Automating a Variant Calling Workflow](https://datacarpentry.org/wrangling-genomics/05-automation/index.html) 
-from Data Carpentry Lesson 
+A Pegasus Workflow for
+[Automating a Variant Calling Workflow](https://datacarpentry.org/wrangling-genomics/05-automation/index.html)
+from Data Carpentry Lesson
 [Data Wrangling and Processing for Genomics](https://datacarpentry.org/wrangling-genomics/).
 
-Pegasus workflow which downloads and aligns SRA data to the E. coli 
+Pegasus workflow which downloads and aligns SRA data to the E. coli
 REL606 reference genome,and see what differences exist in our reads versus
-the genome. The workflow also performs perform  variant calling to see how 
-the population changed over time. 
+the genome. The workflow also performs perform  variant calling to see how
+the population changed over time.
 
 ## Container
 All tools required to execute the jobs in the container are all included in
@@ -32,7 +32,7 @@ category profile.
 ## Workflow
 
 The Pegasus workflow downloads SRA data from NCBI repository using
-`fasterq-dump` in the SRA toolkit and aligns it against the reference 
+`fasterq-dump` in the SRA toolkit and aligns it against the reference
 genome.
 
 ![Pegasus Variant Calling Workflow for 2 SRA reads ](/images/workflow.png)
@@ -53,12 +53,12 @@ The tools used for various jobs in the worklfow are listed in table below
 The workflow is set to run on a local HTCondor Pool in the nonsharedfs
 data configuration mode, where Open Storage Network(OSN) is used as
 a staging site. You need to specify your OSN credentials in the Pegasus
-Credentials file (~/.pegasus/credentials.conf). 
+Credentials file (~/.pegasus/credentials.conf).
 
-Details on how to do it can be found in the 
+Details on how to do it can be found in the
 [user guide](https://pegasus.isi.edu/docs/5.0.3dev/reference-guide/data-management.html#open-storage-network-osn-osn)
 
 To submit a workflow, run:
 ```
-    ./variant-calling.py --reference-genome ref_genome/ecoli_rel606.fasta  --sequence-reads-list tests/2/sra_ids.txt 
+    ./variant-calling.py --reference-genome ref_genome/ecoli_rel606.fasta  --sequence-reads-list tests/2/sra_ids.txt 1
 ```
